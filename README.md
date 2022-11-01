@@ -44,13 +44,7 @@
 
 ![course-outline](/diagrams/course-outline.png)
 
-&nbsp;
-
----
-
-&nbsp;
-
-### Topics
+## Topics
 
 - A particular stream of data
 - Like a table in a database (without all the constraints)
@@ -59,12 +53,6 @@
 - Any kind of message format
 - The sequence of messages is called a **data stream**
 - You cannot query topics, instead, use Kafka Producers to send data and Kafka Consumers to read the data
-
-&nbsp;
-
----
-
-&nbsp;
 
 ### Partitions and offsets
 
@@ -85,12 +73,6 @@
 - Each truck will send a message to Kafka every 20 seconds, each message will contain the truck ID and the truck position (latitude and longitude)
 - You can have a topic `trucks_gps` that contains the position of all trucks
 - We choose to create that topic with 10 partitions (arbitary number)
-
-&nbsp;
-
----
-
-&nbsp;
 
 ### Producers and Message Keys
 
@@ -140,12 +122,6 @@
 - It is acceptable to have multiple consumer groups on the same topic
 - To create distinct consumer groups, use the consumer property `group.id`
 
-&nbsp;
-
----
-
-&nbsp;
-
 ### Consumer Offsets
 
 - Kafka stores the offsets at which a consumer group has been reading
@@ -164,6 +140,103 @@
   - **Exactly once**
     - For Kafka -> Kafka workflows: use the Transactional API (easy with Kafka Streams API)
     - For Kafka -> External System workflows: use an idempotent consumer
+
+&nbsp;
+
+---
+
+&nbsp;
+
+## Brokers
+
+- A Kafka cluster is composed of multiple brokers (servers)
+- Each broker is identified with its ID (integer)
+- Each broker contains certain topic partitions
+- After connecting to any broker (called a bootstrap broker), you will be connected to the entire cluster (Kafka clients have smart mechanics for that)
+- A good number to get started is 3 brokers, but some big clusters have over 100 brokers
+- In these examples we choose to number brokers starting at 100 (arbitrary)
+
+### Broker Discovery
+
+- Every Kafka broker is also called a "bootstrap server"
+- That means that **you only need to connect to one broker**, and the Kafka clients will know how to be connnected ot the entire cluster (smart clients)
+
+![broker-discovery](diagrams/broker-discovery.png)
+
+### Topic Replication Factor
+
+- Topics should have a replication factor > 1 (usually between 2 and 3)
+- This way if a broker is down, another broker can serve the data
+- **Example:**
+  - Topic-A with 2 partitions and replication factor of 2
+  - We will still have Broker 101 and 103 to server the data if we lose Broker 102
+
+|       Broker 101       |       Broker 102       |       Broker 103       |
+| :--------------------: | :--------------------: | :--------------------: |
+| Partition 0<br>Topic-A | Partition 1<br>Topic-A | Partition 1<br>Topic-A |
+|                        | Partition 0<br>Topic-A |                        |
+
+- At any time only **ONE** broker can be a leader for a given partition
+- Producers can only send data to the broker that is leader of a partition
+- The other brokers will replicate the data
+- Therefore, each partition has one leader and multiple ISR (in-sync replica)
+- Kafka Producers can only write to the leader broker for a partition
+- Kafka Consumers by default will read from the leader broker for a partition
+- **Kafka consumers Replica Fetching (Kafka v2.4+)**
+  - Since Kafka 2.4, it is possible to configure consumers to read from the closest replica
+  - This may help improve latency, and also decrease network costs if using the cloud
+- Producers can choose to receive acknowledgement of data writes
+  - `acks=0`: Producer won't wait for acknowledgement (possible data loss)
+  - `acks=1`: Producer will wait for leader acknowledgement (limited data loss)
+  - `acks=all`: Leader + replicas acknowledgement (no data loss)
+- **Kafka Topic Durability**
+  - For a topic replication factor of 3, topic data durability can withstand 2 brokers loss
+  - As a rule, for a replication factor of N, you can permanently lose up to N-1 brokers and still recover your data
+
+&nbsp;
+
+---
+
+&nbsp;
+
+## Zookeeper
+
+- Manages brokers (keeps a list of them)
+- Helps in performing leader election for partitions
+- Sends notifications to Kafka in case of changes
+  - new topic
+  - broker dies
+  - broker comes up
+  - delete topics
+- Kafka 2.x can't work without Zookeeper
+- Kafka 3.x can work without Zookeeper (KIP-500) - using Kafka Raft instead
+- Kafka 4.x will not have Zookeeper
+- Zookeeper by design operates with an odd number of servers (1,3,5,7)
+- Zookeeper has a leader (writes) the rest of the servers are followers (reads)
+- (Zookeeper does NOT store consumer offsets with Kafka > v0.10)
+
+![zookeeper-cluster-ensemble](diagrams/zookeeper-cluster-ensemble.png)
+
+- **Should you use Zookeeper**
+  - **With Kafka Brokers?**
+    - Yes, until Kafka 4.0 is out while waiting for Kafka without Zookeeper to be production-ready
+  - **With Kafka Clients?**
+    - Over time, the Kafka clients and CLI have been migrated to leverage the brokers as a connection endpoint instead of Zookeeper
+    - Since Kafka 0.10, consumers store offset in Kafka and Zookeeper and must not connect to Zookeeper as it is deprecated
+    - Since Kafka 2.2, the `kafka-topics.sh` CLI command references Kafka brokers and not Zookeeper for topic management (creation, deletion, etc...) and the Zookeeper CLI argument is deprecated
+    - All the APIs and commands that were previously leveraging Zookeeper are migrated to use Kafka instead, so that when clusters are migrated to be without Zookeeper, the change is invisible to clients
+    - Zookeeper is also less secure than Kafka, and therefore Zookeeper ports should only be opened to allow traffic from Kafka brokers, and not Kafka clients
+    - **Therefore, to be a great modern-day Kafka developer, never ever use Zookeeper as a configuration in your Kafka clients, and other programs that connect to Kafka**
+- **Kafka KRaft**
+  - In 2020, the Apache Kafka project started to work to remove the Zookeeper dependency from it (KIP-500)
+  - Zookeeper shows scaling issues when Kafka clusters have > 100,000 partitions
+  - By removing Zookeeper, Apache Kafka can
+    - Scale to millions of partitions, and becomes easier to maintain and set-up
+    - Improve stability, makes it easier to monitor, support and administer
+    - Single security model for the whole system
+    - Single process to start with Kafka
+    - Faster controller shutdown and recovery time
+  - Kafka 3.X now implements the Raft protocol (KRaft) in order to replace Zookeeper
 
 &nbsp;
 
