@@ -243,3 +243,21 @@
 ---
 
 &nbsp;
+
+## Kafka Setup
+
+- [conduktor - How to Install Apache Kafka on Windows?](https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-windows#Install-Apache-Kafka-5)
+
+```sh
+# Windows wsl Ubuntu
+zookeeper-server-start.sh ~/kafka_2.13-3.3.1/config/zookeeper.properties
+kafka-server-start.sh ~/kafka_2.13-3.3.1/config/server.properties
+
+kafka-topics --bootstrap-server localhost:9092
+```
+
+&nbsp;
+
+---
+
+&nbsp;
