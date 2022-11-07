@@ -12,6 +12,8 @@ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-first-appl
 
 # topic flag is also needed
 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-first-application --reset-offsets --to-earliest --execute --topic first_topic
+# --all-topic
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-first-application --reset-offsets --to-earliest --execute --all-topic
 
 # consume from where the offsets have been reset
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-first-application

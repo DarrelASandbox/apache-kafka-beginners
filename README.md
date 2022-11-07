@@ -249,12 +249,29 @@
 - [conduktor - How to Install Apache Kafka on Windows?](https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-windows#Install-Apache-Kafka-5)
 
 ```sh
-# Windows wsl Ubuntu
+######################################
+##                                  ##
+##        WINDOWS WSL UBUNTU        ##
+##                                  ##
+######################################
 zookeeper-server-start.sh ~/kafka_2.13-3.3.1/config/zookeeper.properties
 kafka-server-start.sh ~/kafka_2.13-3.3.1/config/server.properties
-
-kafka-topics --bootstrap-server localhost:9092
 ```
+
+&nbsp;
+
+---
+
+&nbsp;
+
+> **Alceu:** what is the relation of consumer groups and partitions after all?
+>
+> So, if I got it correctly, if I want a consumer group to split evenly the load of messages to consume between all the participants of a consumer group, I should assign the same number of consumers and partitions?
+> That's the main reason to partitions?
+
+> **Ivan:** Main reason for partitions is to provide parallelism (more partitions, more consumers can subscribe to reading partitions in parallel) and ordering (ordering is assured on partition level).
+>
+> Question on number of consumers and partition is something you have to figure out on your business case, sometimes it's enough to have few consumers reading 10-100 partitions, sometimes you want more consumers, it all depends on throughput, number of messages etc...
 
 &nbsp;
 

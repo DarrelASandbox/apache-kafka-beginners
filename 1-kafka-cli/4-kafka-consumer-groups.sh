@@ -25,5 +25,6 @@ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group co
 # start a console consumer
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-first-application
 
+# https://sematext.com/blog/kafka-consumer-lag-offsets-monitoring/
 # describe the group again
 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-first-application

@@ -1,6 +1,8 @@
 # Replace "kafka-console-consumer.sh" 
 # by "kafka-console-consumer" or "kafka-console-consumer.bat" based on your system # (or bin/kafka-console-consumer.sh or bin\windows\kafka-console-consumer.bat if you didn't setup PATH / Environment variables)
 
+# https://www.confluent.io/blog/apache-kafka-producer-improvements-sticky-partitioner/
+
 # start one consumer
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-first-application
 
