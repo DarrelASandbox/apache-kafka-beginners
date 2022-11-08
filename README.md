@@ -15,7 +15,7 @@
 
 ## Introduction
 
-![source-systems-target-systems](/diagrams/source-systems-target-systems.png)
+![source-systems-target-systems](/0-diagrams/source-systems-target-systems.png)
 
 - If you have 4 **source systems**, and 6 **target systems**, you need to write 24 **integrations**
 - Each integration comes with difficulties around
@@ -24,11 +24,11 @@
   - Data schema & evolution: how the data is shaped and may change
 - Each source system will have an increased load from the connections
 
-![decoupling-of-data-streams-and-systems](/diagrams/decoupling-of-data-streams-and-systems.png)
+![decoupling-of-data-streams-and-systems](/0-diagrams/decoupling-of-data-streams-and-systems.png)
 
 &nbsp;
 
-![decoupling-of-data-streams-and-systems-2](/diagrams/decoupling-of-data-streams-and-systems-2.png)
+![decoupling-of-data-streams-and-systems-2](/0-diagrams/decoupling-of-data-streams-and-systems-2.png)
 
 ## Use-cases
 
@@ -42,7 +42,7 @@
 - Integration with Spark, Flink, Storm, Hadoop, and many other Big Data technologies
 - Micro-services pub/sub
 
-![course-outline](/diagrams/course-outline.png)
+![course-outline](/0-diagrams/course-outline.png)
 
 ## Topics
 
@@ -67,7 +67,7 @@
 - Order is guaranteed only within a partition (not across partitions)
 - Data is assigned randomly to a partition unless a key is provided
 
-![truck-gps](diagrams/truck-gps.png)
+![truck-gps](0-diagrams/truck-gps.png)
 
 - Say you have a fleet of trucksl each truck reports its GPS position to Kafka
 - Each truck will send a message to Kafka every 20 seconds, each message will contain the truck ID and the truck position (latitude and longitude)
@@ -82,14 +82,14 @@
 - Can choose to send a **key** with the message (string, number, binary, etc...)
 - If `key=null`, data is sent round robin (partition 0, then 1, then 2...)
 
-![messages-anatomy](diagrams/messages-anatomy.png)
+![messages-anatomy](0-diagrams/messages-anatomy.png)
 
 - **Message Serializer**
   - Kafka only accepts bytes as an input from producers and sends bytes out as an output to consumers
   - Message Serialization means transforming objects/ data into bytes
   - They are used on the value and the key
 
-![message-serializer](diagrams/message-serializer.png)
+![message-serializer](0-diagrams/message-serializer.png)
 
 - **Message Key Hashing**
   - A kafka partitioner is a code logic that takes a record and determines to which partition to send it into
@@ -161,7 +161,7 @@
 - Every Kafka broker is also called a "bootstrap server"
 - That means that **you only need to connect to one broker**, and the Kafka clients will know how to be connnected ot the entire cluster (smart clients)
 
-![broker-discovery](diagrams/broker-discovery.png)
+![broker-discovery](0-diagrams/broker-discovery.png)
 
 ### Topic Replication Factor
 
@@ -215,7 +215,7 @@
 - Zookeeper has a leader (writes) the rest of the servers are followers (reads)
 - (Zookeeper does NOT store consumer offsets with Kafka > v0.10)
 
-![zookeeper-cluster-ensemble](diagrams/zookeeper-cluster-ensemble.png)
+![zookeeper-cluster-ensemble](0-diagrams/zookeeper-cluster-ensemble.png)
 
 - **Should you use Zookeeper**
   - **With Kafka Brokers?**
@@ -272,6 +272,22 @@ kafka-server-start.sh ~/kafka_2.13-3.3.1/config/server.properties
 > **Ivan:** Main reason for partitions is to provide parallelism (more partitions, more consumers can subscribe to reading partitions in parallel) and ordering (ordering is assured on partition level).
 >
 > Question on number of consumers and partition is something you have to figure out on your business case, sometimes it's enough to have few consumers reading 10-100 partitions, sometimes you want more consumers, it all depends on throughput, number of messages etc...
+
+&nbsp;
+
+---
+
+&nbsp;
+
+## Kafka Java Programming
+
+- [Kafka SDK List](https://www.conduktor.io/kafka/kafka-sdk-list)
+- [Amazon Corretto 11](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/what-is-corretto-11.html)
+- [IntelliJ IDEA Download](https://www.jetbrains.com/idea/download/)
+- Refer to build.gradle
+  - [MVN repository - kafka-clients 3.3.1 Gradle (Short)](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients/3.3.1)
+  - [MVN repository - slf4j 1.7.36 Gradle (Short)](https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.36)
+  - [MVN repository - slf4j Simple Binding 1.7.36 Gradle (Short)](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple/1.7.36)
 
 &nbsp;
 
