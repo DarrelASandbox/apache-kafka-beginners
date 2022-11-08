@@ -279,7 +279,7 @@ kafka-server-start.sh ~/kafka_2.13-3.3.1/config/server.properties
 
 &nbsp;
 
-## Kafka Java Programming
+## 4-kafka-basics
 
 - [Kafka SDK List](https://www.conduktor.io/kafka/kafka-sdk-list)
 - [Amazon Corretto 11](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/what-is-corretto-11.html)
@@ -288,6 +288,15 @@ kafka-server-start.sh ~/kafka_2.13-3.3.1/config/server.properties
   - [MVN repository - kafka-clients 3.3.1 Gradle (Short)](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients/3.3.1)
   - [MVN repository - slf4j 1.7.36 Gradle (Short)](https://mvnrepository.com/artifact/org.slf4j/slf4j-api/1.7.36)
   - [MVN repository - slf4j Simple Binding 1.7.36 Gradle (Short)](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple/1.7.36)
+
+```sh
+kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --partitions 3 --replication-factor 1
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demo_java
+
+# Get inet ip
+ip addr | grep "eth0"
+netsh interface portproxy add v4tov4 listenport=9092 listenaddress=0.0.0.0 connectport=9092 connectaddress=172.25.5.146
+```
 
 &nbsp;
 
